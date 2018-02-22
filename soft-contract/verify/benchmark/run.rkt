@@ -1,4 +1,4 @@
-#lang typed/racket/base
+#lang typed/racket/no-check
 (require racket/cmdline racket/match racket/list racket/set
          (only-in racket/file file->list)
          "../../utils.rkt" "../../show.rkt" "../../lang.rkt" "../../runtime.rkt" "../machine.rkt"
@@ -37,6 +37,18 @@
 (: a→time : (U #f (List Bm-Result)) → (U String N))
 (define a→time (match-lambda [#f "$\\infty$"]
                              [(list (list _ t _ _)) t]))
+
+(define-syntax-rule (match? v p ...) (match v [p #t] ... [_ #f]))
+(define-syntax-rule (for/set: X (c ...) e ...)
+  (for/fold ([acc : (Setof X) ∅]) (c ...)
+    (set-add acc (begin e ...))))
+(define-syntax-rule (within-time: τ n e ...)
+  (let ([c : (Channelof (U #f (List τ))) (make-channel)])
+    (let ([t1 (thread (λ () (channel-put c (list (begin e ...)))))]
+          [t2 (thread (λ () (sleep n) (channel-put c #f)))])
+      (match (channel-get c)
+        [#f (kill-thread t1) #f]
+        [ans (kill-thread t2) ans]))))
 
 (: a→#blame : (U #f (List Bm-Result)) → (U String N))
 (define a→#blame

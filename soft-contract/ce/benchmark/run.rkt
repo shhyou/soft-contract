@@ -1,4 +1,4 @@
-#lang typed/racket/base
+#lang typed/racket/no-check
 (require racket/match racket/set racket/cmdline racket/list racket/set racket/bool
          (only-in racket/file file->list)
          "../../utils.rkt" "../../lang.rkt" "../../show.rkt" "../../runtime.rkt" "../machine.rkt"
@@ -35,6 +35,14 @@
 
 (define time-app
   (cast time-apply ((.p → (Option .Ans)) (List .p) → (Values (List (Option .Ans)) N N N))))
+
+(define-syntax-rule (within-time: τ n e ...)
+  (let ([c : (Channelof (U #f (List τ))) (make-channel)])
+    (let ([t1 (thread (λ () (channel-put c (list (begin e ...)))))]
+          [t2 (thread (λ () (sleep n) (channel-put c #f)))])
+      (match (channel-get c)
+        [#f (kill-thread t1) #f]
+        [ans (kill-thread t2) ans]))))
 
 (: benchmark : (.p → (Option .Ans)) .p → (U #f (List Bm-Result)))
 (define (benchmark ev p)
