@@ -379,25 +379,17 @@
   (: step-•₁ : .L .V Symbol .σ .κ* → .ς*)
   (define (step-•₁ Lf V l σ k)
 
-    (: step-const : .L .σ .κ* → .ς)
-    (define (step-const Lf σ k)
-      (match-define (and ● (.•ₗ n)) (•!))
-      (define σ′ (σ-set σ
-                        n ♦
-                        Lf (→V (.λ↓ (.λ 1 ● #f) ρ∅))))
-      (.ς (.L n) σ′ k))
-
     (: step-dep : .L .V .σ .κ* → .ς)
     (define (step-dep Lf V σ k)
       (match-define (and ●₁ (.•ₗ α₁)) (•!))
       (match-define (and ●₂ (.•ₗ α₂)) (•!))
       (define e (.if (.@ 'procedure? (list (.x 0)) '☠)
-                     (.λ 1 (.@ (.@ ●₁ (list (.x 1)) '☠) (list (.x 0)) '☠) #f)
+                     ●₁
                      (.@ ●₂ (list (.x 0)) '☠)))
       (define Vf (→V (.λ↓ (.λ 1 e #f) ρ∅)))
       (.ς (.↓ e (ρ+ ρ∅ V))
           (σ-set σ
-                 α₁ (.// '• (set (Prim 'procedure?)))
+                 α₁ ♦
                  α₂ (→V Case∅)
                  Lf Vf)
           k))
@@ -428,7 +420,7 @@
         [(? .prim?) ∅]
         [_ #|no behavior|# ∅]))
 
-    (ς∪ (step-const Lf σ k)
+    (ς∪
         (step-dep Lf V σ k)
         (step-havoc Lf V σ k)))
 
