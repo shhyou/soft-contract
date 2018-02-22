@@ -1,12 +1,14 @@
 #lang racket/base
 
-(module+ test
   (require racket/cmdline racket/match racket/set racket/list racket/sandbox racket/contract
            racket/file racket/format rackunit
            (only-in racket/file file->list)
            "../utils.rkt" "../show.rkt" "../lang.rkt" "../read.rkt" "../runtime.rkt"
-           "../check.rkt" "../main.rkt")
-  (define Time-Out 120)
+           "../check.rkt"
+           (only-in "../main.rkt" feedback/massage))
+
+  (provide (all-defined-out))
+  (define Time-Out 600)
 
   (define scv:exn? (or/c exn:fail:contract:counterexample? exn:fail:contract:maybe?))
   (define verification-result? (or/c 'timeout 'safe scv:exn?))
@@ -58,6 +60,13 @@
       (check-false (member #\• (string->list err-msg))))
     (log-info "~n~a~n" err-msg))
 
+(define ps
+    (map
+     string->path
+     '("fail-ce/others/1421513376892.sch"
+       "fail-ce/others/1421308177595.sch")))
+
+(module+ test
   (define sum-all-lc 0)
   (define max-all-order 0)
   (define sum-all-t 0)
