@@ -1,3 +1,6 @@
+(module opaque racket
+  (provide/contract [n real?]))
+
 (module id racket
   (provide/contract
    [f (->i ([x number?]) (res (x) (=/c x)))])

@@ -1,4 +1,4 @@
-#lang typed/racket/base
+#lang typed/racket/no-check
 (require racket/match racket/set racket/cmdline racket/list racket/set racket/bool
          (only-in racket/file file->list)
          "../../utils.rkt" "../../lang.rkt" "../../show.rkt" "../../runtime.rkt" "../machine.rkt"
@@ -9,6 +9,16 @@
 (require/typed "../read.rkt" [read-p (Any → .p)])
 (require/typed racket/file [file->lines (Path-String → (Listof String))])
 (require/typed racket [string-trim (String String → String)])
+
+;; evaluate an expression within given #seconds
+;; return singleton list of value, or #f on timeout
+(define-syntax-rule (within-time: τ n e ...)
+  (let ([c : (Channelof (U #f (List τ))) (make-channel)])
+    (let ([t1 (thread (λ () (channel-put c (list (begin e ...)))))]
+          [t2 (thread (λ () (sleep n) (channel-put c #f)))])
+      (match (channel-get c)
+        [#f (kill-thread t1) #f]
+        [ans (kill-thread t2) ans]))))
 
 (define-type Mode (U 'tex 'verbose 'overbose))
 (define-type N Nonnegative-Integer)
