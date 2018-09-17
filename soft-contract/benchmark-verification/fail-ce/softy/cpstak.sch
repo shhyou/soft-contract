@@ -21,5 +21,5 @@
 (module nums racket
   (provide/contract [a number?] [b number?] [c number?]))
 
-(require 'tak 'nums)
-(tak a b c (lambda (x) x))
+(require 'tak)
+(tak • • • •)

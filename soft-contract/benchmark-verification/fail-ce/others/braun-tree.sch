@@ -5,14 +5,16 @@
   
   (struct node (v l r))
 
-  (define (braun-tree? x)
-    (or (false? x)
+  (define braun-tree?
+    (or/c
+     #f
+     (lambda (x)
 	(and (node? x)
 	     (braun-tree? (node-l x))
 	     (braun-tree? (node-r x))
 	     (let ([l (size (node-l x))]
 		   [r (size (node-r x))])
-	       (or (= l r) (= l (add1 r)))))))
+	       (or (= l r) (= l (add1 r))))))))
   
   (define (size x)
     (if (node? x)

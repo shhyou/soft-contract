@@ -6,5 +6,5 @@
   (define (f v l)
     (let ([x (member v l)])
       (if x x #f))))
-(require 'ex-03 'lib)
+(require 'ex-03)
 (f • •)

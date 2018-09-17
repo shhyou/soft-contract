@@ -9,5 +9,5 @@
 (module nums racket
   (provide/contract [a number?] [b number?] [c number?]))
 
-(require 'tak 'nums)
-(tak a b c)
+(require 'tak)
+(tak • • •)

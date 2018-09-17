@@ -5,4 +5,4 @@
     (if (cons? #|HERE|# x) (lastpair (cdr x)) x)))
 
 (require 'lastpair)
-(lastpair (cons • •))
+(lastpair •)

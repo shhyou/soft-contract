@@ -3,5 +3,5 @@
    [f (->i ([x number?]) (res (x) (=/c x)))])
   (define (f x) x))
 
-(require 'opaque 'id)
+(require 'id)
 (f •)
