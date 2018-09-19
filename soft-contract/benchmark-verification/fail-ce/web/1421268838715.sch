@@ -14,7 +14,7 @@
 
 (module user racket
   (require (submod ".." argmin))
-  (provide main)
+  (provide (contract-out [main (-> any/c)]))
   (define (main) (argmin (λ (x) 0+1i) (cons 0.873 (cons 0.072 empty)))))
  
 (require 'user)
